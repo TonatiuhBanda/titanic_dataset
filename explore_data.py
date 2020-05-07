@@ -26,7 +26,6 @@ plt.figure()
 plt.hist(data_train['Pclass'])
 
 '''
-#print(data_train.describe())
 
 
 #TRANSFORM
