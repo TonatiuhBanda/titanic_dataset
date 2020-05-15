@@ -18,11 +18,11 @@ from sklearn.metrics import accuracy_score
 
 #READ DATA
 file_train = 'titanic_kaggle/train.csv'
-data_raw = pd.read_csv(file_train)
+data_org = pd.read_csv(file_train)
 
 
 #TRANSFORM
-data_raw = data_raw[['Survived', 'Age', 'Pclass', 'Sex']]
+data_raw = data_org[['Survived', 'Age', 'Pclass', 'Sex']]
 data_raw = data_raw.dropna()
 
 enc = preprocessing.OrdinalEncoder()
@@ -44,7 +44,7 @@ y_test = test.iloc[:, 0]
 
 classifiers = {
     'dt': {'model':tree.DecisionTreeClassifier()},
-    'rf': {'model':RandomForestClassifier(n_estimators=30)},
+    'rf': {'model':RandomForestClassifier(n_estimators=30, random_state=12)},
     'gb': {'model':GradientBoostingClassifier()}
     }
 
