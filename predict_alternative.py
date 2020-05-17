@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import linear_model
 
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
@@ -46,6 +47,16 @@ df_data = pd.DataFrame(data_scaled, columns=data_smart.columns)
 X = df_data.iloc[:, 1:]
 y = df_data.iloc[:, 0]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+
+#RIDGE
+clf_r = linear_model.Ridge(alpha=0.01)
+clf_r.fit(X_train, y_train)
+#LASSO
+clf = linear_model.Lasso(alpha=0.001)
+clf.fit(X_train, y_train)
+
+X_train = X_train*abs(clf.coef_)
+X_test = X_test*abs(clf.coef_)
 
 
 #CLASIFICATION
