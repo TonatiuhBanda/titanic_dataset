@@ -16,6 +16,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn import linear_model
 
+import xgboost as xgb
+
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
@@ -33,7 +35,8 @@ enc = preprocessing.OrdinalEncoder()
 enc.fit(data_raw[['Sex']])
 transform_data = enc.transform(data_raw[['Sex']])
 data_raw['sex_enc'] = transform_data
-data_smart = data_raw[['Survived', 'Age', 'Pclass', 'sex_enc', 'SibSp', 'Parch', 'Fare']]
+#data_smart = data_raw[['Survived', 'Age', 'Pclass', 'sex_enc', 'SibSp', 'Parch', 'Fare']]
+data_smart = data_raw[['Survived', 'Age', 'Pclass', 'sex_enc']]
 data_smart = data_smart.reset_index(drop=True)
 
 #SCALER
@@ -46,8 +49,9 @@ df_data = pd.DataFrame(data_scaled, columns=data_smart.columns)
 #TRAIN-TEST
 X = df_data.iloc[:, 1:]
 y = df_data.iloc[:, 0]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=12)
 
+'''
 #RIDGE
 clf_r = linear_model.Ridge(alpha=0.01)
 clf_r.fit(X_train, y_train)
@@ -57,13 +61,14 @@ clf.fit(X_train, y_train)
 
 X_train = X_train*abs(clf.coef_)
 X_test = X_test*abs(clf.coef_)
-
+'''
 
 #CLASIFICATION
 classifiers = {
     'dt': {'model':tree.DecisionTreeClassifier()},
     'rf': {'model':RandomForestClassifier(n_estimators=30, random_state=12)},
-    'gb': {'model':GradientBoostingClassifier()}
+    'gb': {'model':GradientBoostingClassifier()},
+    'xgb': {'model':xgb.XGBClassifier(objective="binary:logistic", n_estimators=30, random_state=12)}
     }
 
 for key in classifiers:
@@ -76,4 +81,3 @@ for key in classifiers:
     print(tn, fp, fn, tp)
     print(accuracy_score(y_test, classifiers[key]['y_pred']))
     print('')
-
